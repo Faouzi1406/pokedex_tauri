@@ -1,6 +1,7 @@
 mod pokemon_structs;
 mod spawn_window;
-
+mod pokemon_types;
+mod pokemon_abilities;
 
 use uuid::Uuid;
 use pokemon_rs::*;
@@ -8,7 +9,8 @@ use spawn_window::*;
 
 use pokemon_structs::{
     AllPokemon,
-    Pokemon
+    Pokemon,
+    get_pokemon
 };
 
 #[cfg_attr(
@@ -23,6 +25,7 @@ fn unique_id() -> String {
     format!("{:?}", id)
 }
 
+
 #[tauri::command]
 fn get_all_pokemon() -> AllPokemon {
     let pokemon_get = pokemon_rs::get_all(None);
@@ -31,7 +34,7 @@ fn get_all_pokemon() -> AllPokemon {
     for pokemon in pokemon_get{
         let id  = pokemon_rs::get_id_by_name(pokemon, None);
         let pokemon:Pokemon = Pokemon { 
-            id:id,
+            id,
             name: pokemon.to_owned(), 
             sound: format!("{}.mp3", pokemon), 
             image: format!("{}.jpg", pokemon) 
@@ -48,7 +51,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             spawn_window,
             get_all_pokemon,
-            unique_id
+            unique_id, 
+            get_pokemon
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

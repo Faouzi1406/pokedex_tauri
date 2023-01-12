@@ -1936,12 +1936,12 @@ name = "my-pokedex"
 version = "0.0.0"
 dependencies = [
  "pokemon-rs",
+ "reqwest",
  "rustemon",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
- "tauri-plugin-store",
  "uuid 1.2.2",
 ]
 
@@ -3490,18 +3490,6 @@ dependencies = [
  "syn",
  "tauri-codegen",
  "tauri-utils",
-]
-
-[[package]]
-name = "tauri-plugin-store"
-version = "0.1.0"
-source = "git+https://github.com/tauri-apps/plugins-workspace?branch=dev#42b145e0ce9889caf81de5f254b5ec316924d0b4"
-dependencies = [
- "log",
- "serde",
- "serde_json",
- "tauri",
- "thiserror",
 ]
 
 [[package]]

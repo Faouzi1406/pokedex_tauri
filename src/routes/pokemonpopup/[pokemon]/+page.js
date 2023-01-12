@@ -6,6 +6,7 @@ export const load = ({params}) => {
   //<0 pokemon bestaat niet
   if (isNaN(pokemon_id) || pokemon_id <=0 || pokemon_id >= 900) {
     return {
+      pokemon_id: null,
       error:"Pokemon doesn't exist",
     }
   }

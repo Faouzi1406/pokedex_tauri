@@ -11,29 +11,34 @@
     all_pokemon = pokemon;
   }
 
-  async function create_window(location:string){
-    const webview = new WebviewWindow('', {
-        url: `./pokemonpopup/${location}`,
-    })
-  }
-
   async function create_uuid(){
     let id = await invoke('unique_id');
     console.log(id);
     return id
   }
 
+  async function create_window(location:string){
+    const uuid = await create_uuid();
+
+    const webview = new WebviewWindow(`${uuid}`, {
+        url: `./pokemonpopup/${location}`,
+    })
+
+    webview.once('tauri://error', function (e) {
+      console.log(e)
+    });
+  }
+
+
   get_all_pokemon()
 </script>
-
-<p on:click={create_uuid}>Test uuid</p>
 
 <div class="mb-2">
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-screen  place-items-center" >
     {#if all_pokemon !=null }
       {#each all_pokemon.all_pokemon as pokemon}
         {#if pokemon.id < 900}
-        <div on:click={() => create_window("test")}>
+        <div on:click={() => create_window(pokemon.id)}>
           <Pokemon pokemon_i={pokemon}   /> 
         </div>
         {/if}
