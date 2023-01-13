@@ -3,11 +3,12 @@ use crate::{
     pokemon_abilities::*
 };
 
+#[derive(Debug)]
 pub enum PokemonNotFound {
     IDOUTOFSCOPE
 }
 
-#[derive(Debug, serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Pokemon {
     pub id:usize,
     pub name: String, 
@@ -29,53 +30,85 @@ impl AllPokemon {
     }
 }
 
-pub struct PokemonStats {
-    hp:usize,
-    attack:usize,
-    defense:usize,
-    sp_attack:usize,
-    sp_def:usize,
-    speed:usize,
-    total:usize
-}
 
 /// Informatie over pokemon denk hier aan Type, height etc..
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct PokemonInformation {
-    type_pokemon:Vec<PokemonType>,
+    //type_pokemon:Vec<PokemonType>,
     height:f32,
     weight:f32,
-    abilities:Vec<PokemonAbilities>,
+    base_experience:Option<usize>,
+    abilities:Vec<Abilities>
 }
 
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct PokemonDetails {
     pokemon:Pokemon,
-    pokemon_stats: PokemonStats,
     pokemon_information:PokemonInformation
 }
 
-impl PokemonDetails {
-    fn new(pokemon_id:usize) /* -> Result<Self, PokemonNotFound> */ {
-        //Check of pokemon id in scope is tussen 1 en 900
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+struct Ability {
+    name: String,
+    url: String,
+}
 
-        // if pokemon_id <1 || pokemon_id >900 {
-        //     return Err(PokemonNotFound::IDOUTOFSCOPE);
-        // }
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+struct Abilities {
+    ability: Ability,
+    is_hidden: bool,
+    slot: i32,
+}
+
+
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct PokemonFetch {
+    name:String,
+    base_experience:Option<usize>,
+    height:f32,
+    weight:f32,
+    abilities:Vec<Abilities>
+}
+
+impl PokemonDetails {
+    fn new(pokemon_id:usize) -> Result<Self, PokemonNotFound> {
+
+        if pokemon_id <1 || pokemon_id >900 {
+             return Err(PokemonNotFound::IDOUTOFSCOPE);
+        }
 
         let pokemon_name = pokemon_rs::get_by_id(pokemon_id, None).to_lowercase();
         let query_url  = format!("https://pokeapi.co/api/v2/pokemon/{}", pokemon_name);
 
-        let pokemon_get = reqwest::blocking::get(query_url)
+        let pokemon_get:PokemonFetch = reqwest::blocking::get(query_url)
             .unwrap()
-            .text()
+            .json()
             .unwrap();
+        print!("{:#?}", pokemon_get);
 
-        println!("{pokemon_get}");
+        let pokemon:Pokemon = Pokemon {
+            id:pokemon_id,
+            name:pokemon_get.name.to_string(),
+            sound:format!("{pokemon_name}.mp3"),
+            image:format!("{pokemon_name}.mp3")
+        };
+
+        let pokemon_information:PokemonInformation = PokemonInformation {
+            height: pokemon_get.height,
+            weight: pokemon_get.weight,
+            base_experience: pokemon_get.base_experience,
+            abilities:pokemon_get.abilities
+        };
+
+        return Ok(PokemonDetails {
+                pokemon,
+                pokemon_information
+        });
     }
 }
 
 
 #[tauri::command]
-pub fn get_pokemon(pokemon_id:usize) ->String{
-    PokemonDetails::new(pokemon_id);
-    "worked".to_string()
+pub fn get_pokemon(pokemon_id:usize) -> PokemonDetails {
+    PokemonDetails::new(pokemon_id).unwrap()
 }

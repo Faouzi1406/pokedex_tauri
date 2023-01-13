@@ -2,7 +2,7 @@
 
  <div class="navbar bg-base-100 sticky top-0">
   <div class="flex-1">
-    <a class="btn btn-ghost normal-case text-xl" href="/">Pokedex</a>
+    <p class="btn btn-ghost normal-case text-xl">Pokedex</p>
   </div>
 
   <div class="flex-none gap-2">
