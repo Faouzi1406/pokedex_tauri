@@ -1,8 +1,8 @@
 [package]
 name = "my-pokedex"
 version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "Pokedex"
+authors = ["Fauzi"]
 license = ""
 repository = ""
 edition = "2021"

@@ -11,6 +11,18 @@
     url: String,
   }
 
+
+  type Stat = {
+    name:String,
+    url:String
+  }
+
+  type Stats = {
+    base_stat:number,
+    effort:number,
+    stat:Stat
+  }
+
   type Abilities  = {
     ability: Ability,
     is_hidden: boolean,
@@ -21,7 +33,8 @@
     base_experience:number,
     height:number,
     weight:number,
-    abilities:Object<Abilities>
+    abilities:Object<Abilities>,
+    stats:Object<Stats>
   }
 
   export type PokemonResult = {

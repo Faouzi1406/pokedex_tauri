@@ -7,7 +7,7 @@
 
   const get_pokemon = async (id:any) => {
     let pokemon_fetch:PokemonResult= await invoke('get_pokemon',  { pokemonId: id});   
-    console.log(pokemon_fetch);
+    console.log(pokemon_fetch.pokemon_information.stats);
     pokemon = pokemon_fetch;
   }
 
@@ -29,13 +29,13 @@
           <h2 class="font-semibold text-xl">
             Information 
           </h2>
-          <p class="mt-4">
+          <p class="mt-4 font-semibold">
             Height:  {pokemon.pokemon_information.height}.0
           </p>
-          <p>
+          <p class="font-semibold">
             Weight:  {pokemon.pokemon_information.weight}.0
           </p>
-          <p>
+          <p class="font-semibold">
             Base experience:  {pokemon.pokemon_information.base_experience}.0
           </p>
           <audio
@@ -48,6 +48,34 @@
             <p class="border bg-green-500 text-white w-24 text-center rounded p-0.5 m-1" >{ability_info.ability.name}</p>
           {/each}
         </div>
+      </div>
+    </div>
+    <div class="py-6 px-8">
+      <h3 class=" text-3xl font-bold">Stats</h3>
+      <div>
+        {#each pokemon.pokemon_information.stats as stat }
+          <div class="font-semibold border rounded p-2 m-2">
+            <div class="flex gap-2 items-center">
+            <p class="">
+              Stat:  
+            </p>
+            <p class="uppercase">
+              { stat.stat.name }
+            </p>
+            </div>
+            <p>
+              Effort: { stat.effort } 
+            </p>
+            <p>Base stat: 
+              <progress 
+              class="progress progress-accent w-56" 
+              value="{stat.base_stat}" 
+              max="100">
+              </progress>
+              {stat.base_stat}
+            </p>
+          </div>
+        {/each}
       </div>
     </div>
     {:else}

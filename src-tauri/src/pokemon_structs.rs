@@ -38,7 +38,8 @@ pub struct PokemonInformation {
     height:f32,
     weight:f32,
     base_experience:Option<usize>,
-    abilities:Vec<Abilities>
+    abilities:Vec<Abilities>,
+    stats:Vec<Stats>
 }
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
@@ -60,6 +61,19 @@ struct Abilities {
     slot: i32,
 }
 
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct Stat {
+    name:Option<String>,
+    url:Option<String>
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+pub struct Stats {
+    base_stat:Option<i32>,
+    effort:Option<i32>,
+    stat:Option<Stat>
+}
+
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct PokemonFetch {
@@ -67,7 +81,8 @@ pub struct PokemonFetch {
     base_experience:Option<usize>,
     height:f32,
     weight:f32,
-    abilities:Vec<Abilities>
+    abilities:Vec<Abilities>,
+    stats:Vec<Stats>
 }
 
 impl PokemonDetails {
@@ -84,6 +99,7 @@ impl PokemonDetails {
             .unwrap()
             .json()
             .unwrap();
+
         print!("{:#?}", pokemon_get);
 
         let pokemon:Pokemon = Pokemon {
@@ -97,7 +113,8 @@ impl PokemonDetails {
             height: pokemon_get.height,
             weight: pokemon_get.weight,
             base_experience: pokemon_get.base_experience,
-            abilities:pokemon_get.abilities
+            abilities:pokemon_get.abilities,
+            stats:pokemon_get.stats
         };
 
         return Ok(PokemonDetails {
