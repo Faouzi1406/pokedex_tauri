@@ -25,6 +25,29 @@ fn unique_id() -> String {
     format!("{:?}", id)
 }
 
+#[tauri::command]
+fn get_stored_pokemon(pokemons:Vec<String>) -> AllPokemon {
+  let mut all_pokemon_saved:AllPokemon = AllPokemon {
+    all_pokemon:Vec::new()
+  };
+
+  for pokemon in pokemons {
+        let get_pokemon_id = pokemon_rs::get_id_by_name(&pokemon, None);
+        let pokemon_name = pokemon.clone();
+
+        let pokemon:Pokemon = Pokemon {
+            id:get_pokemon_id,
+            name:pokemon,
+            image:format!("{pokemon_name}.png"),
+            sound:format!("{pokemon_name}.mp3")
+        };
+
+        all_pokemon_saved.all_pokemon.push(pokemon);
+  }
+
+  all_pokemon_saved
+}
+
 
 #[tauri::command]
 fn get_all_pokemon() -> AllPokemon {
@@ -48,11 +71,13 @@ fn get_all_pokemon() -> AllPokemon {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             spawn_window,
             get_all_pokemon,
             unique_id, 
-            get_pokemon
+            get_pokemon,
+            get_stored_pokemon
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

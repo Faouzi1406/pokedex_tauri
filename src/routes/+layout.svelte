@@ -4,6 +4,5 @@
 </script>
 
 <main class="container">
-  <Navbar />
   <slot />
 </main>
